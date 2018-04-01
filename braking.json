@@ -1,0 +1,45 @@
+{
+	"training" : [
+		{
+			"file" : "data/biking/braking3_flat_1_22.csv",
+			"start" : 5000,
+			"stops" : [
+				[10000, 18000],
+				[23000, 30000],
+				[35000, 43000],
+				[50000, 58000],
+				[64000, 73000]
+			]
+		},
+		{
+			"file" : "data/biking/braking4_flat_1_14_5.csv",
+			"start" : 5000,
+			"stops" : [
+				[9000, 15000],
+				[24000, 32000],
+				[43000, 50000],
+				[55000, 62000],
+				[68000, 73000]
+			]
+		},
+		{
+			"file" : "data/biking/braking5_flat_1_22_5.csv",
+			"start" : 5000,
+			"stops" : [
+				[9000, 16000],
+				[25000, 31000],
+				[38000, 45000],
+				[50000, 58000],
+				[65000, 72000]
+			]
+		}
+	],
+	"testing" : [
+		{
+			"file" : "data/biking/braking1_hill.csv"
+		},
+		{
+			"file" : "data/biking/braking2_hill.csv"
+		}
+	]
+}
