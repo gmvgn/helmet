@@ -1,7 +1,7 @@
 {
-	"dir" : "right_turn2",
+	"dir" : "right_turn",
 	"train_columns" : ["Gyro_x", "Heading"],
-	"kernels" : ["linear", "rbf"],
+	"kernels" : ["linear", "rbf", "logistic"],
 	"plot_columns" : ["Gyro_x", "Heading"],
 	"scale_vals" : true,
 	"training" : [
@@ -32,11 +32,14 @@
 			"stops" : [
 				[7500, 8750]
 			]
+		},
+		{
+			"file" : "data/turning/right5_6_8h_12.csv",
+			"start" : 1000,
+			"stops" : [
+				[7000, 8500]
+			]
 		}
 	],
-	"testing" : [
-		{
-			"file" : "data/turning/right5_6_8h_12.csv"
-		}
-	]
+	"testing" : []
 }

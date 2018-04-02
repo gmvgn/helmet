@@ -1,0 +1,53 @@
+
+----------------------------------
+ML TRAINING
+
+
+Dir:  ml/left_turn2/
+Train on:  ['Gyro_x', 'Gyro_y', 'Gyro_z', 'Accel_x', 'Accel_y', 'Accel_z', 'Heading']
+Plot with:  ['Gyro_x', 'Heading']
+Kernels:  ['linear', 'rbf', 'logistic']
+Selecting data...
+Finished
+Training classifier...
+
+-----------------
+Kernel: linear
+Score:  0.892105263158
+Weights:  [[  3.11134722e-03   1.05373018e-03   4.53894064e-02   1.11090656e+00
+   -2.80029159e+00  -5.11778842e-01   1.28160208e-04]]
+Intercept:  [-0.92344789]
+Prediction test:  0.8921052631578947
+
+ml/left_turn2/linear_train_0.png
+ml/left_turn2/linear_train_1.png
+ml/left_turn2/linear_train_2.png
+ml/left_turn2/linear_train_3.png
+ml/left_turn2/linear_test_0.png
+
+-----------------
+Kernel: rbf
+Score:  1.0
+
+ml/left_turn2/rbf_train_0.png
+ml/left_turn2/rbf_train_1.png
+ml/left_turn2/rbf_train_2.png
+ml/left_turn2/rbf_train_3.png
+ml/left_turn2/rbf_test_0.png
+
+-----------------
+Kernel: logistic
+Score:  0.881578947368
+Weights:  [[  1.36795762e-02  -5.45648263e-03   6.97496825e-02   1.69188015e+00
+   -2.39682571e+00  -1.22955252e+00   2.01144210e-03]]
+Intercept:  [-1.1691547]
+Prediction test:  0.881578947368421
+
+ml/left_turn2/logistic_train_0.png
+ml/left_turn2/logistic_train_1.png
+ml/left_turn2/logistic_train_2.png
+ml/left_turn2/logistic_train_3.png
+ml/left_turn2/logistic_test_0.png
+
+Finished
+

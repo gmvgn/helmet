@@ -1,0 +1,71 @@
+
+----------------------------------
+ML TRAINING
+
+
+Dir:  ml/braking/
+Train on:  ['Gyro_x', 'Gyro_y', 'Gyro_z', 'Accel_x', 'Accel_y', 'Accel_z']
+Plot with:  ['Accel_z']
+Kernels:  ['linear', 'rbf', 'logistic']
+Selecting data...
+Finished
+Training classifier...
+
+-----------------
+Kernel: linear
+Score:  0.615357887422
+Weights:  [[ -9.71214912e-06   5.96328865e-07   3.35444300e-06   4.29267741e-04
+    2.44346925e-04   8.64238431e-05]]
+Intercept:  [-0.99983659]
+Prediction test:  0.6153578874218207
+
+ml/braking/linear_train_0.png
+ml/braking/linear_train_1.png
+ml/braking/linear_train_2.png
+ml/braking/linear_train_3.png
+ml/braking/linear_train_4.png
+ml/braking/linear_train_5.png
+ml/braking/linear_train_6.png
+ml/braking/linear_train_7.png
+ml/braking/linear_train_8.png
+ml/braking/linear_test_0.png
+ml/braking/linear_test_1.png
+
+-----------------
+Kernel: rbf
+Score:  0.837734537874
+
+ml/braking/rbf_train_0.png
+ml/braking/rbf_train_1.png
+ml/braking/rbf_train_2.png
+ml/braking/rbf_train_3.png
+ml/braking/rbf_train_4.png
+ml/braking/rbf_train_5.png
+ml/braking/rbf_train_6.png
+ml/braking/rbf_train_7.png
+ml/braking/rbf_train_8.png
+ml/braking/rbf_test_0.png
+ml/braking/rbf_test_1.png
+
+-----------------
+Kernel: logistic
+Score:  0.613968033356
+Weights:  [[  2.33464581e-03   1.60721502e-03  -3.67699391e-03   1.61686882e+00
+    3.05179819e-01  -1.23003281e-01]]
+Intercept:  [ 0.01278554]
+Prediction test:  0.6139680333564975
+
+ml/braking/logistic_train_0.png
+ml/braking/logistic_train_1.png
+ml/braking/logistic_train_2.png
+ml/braking/logistic_train_3.png
+ml/braking/logistic_train_4.png
+ml/braking/logistic_train_5.png
+ml/braking/logistic_train_6.png
+ml/braking/logistic_train_7.png
+ml/braking/logistic_train_8.png
+ml/braking/logistic_test_0.png
+ml/braking/logistic_test_1.png
+
+Finished
+

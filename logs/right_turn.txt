@@ -1,0 +1,51 @@
+
+----------------------------------
+ML TRAINING
+
+
+Dir:  ml/right_turn/
+Train on:  ['Gyro_x', 'Heading']
+Plot with:  ['Gyro_x', 'Heading']
+Kernels:  ['linear', 'rbf', 'logistic']
+Selecting data...
+Finished
+Training classifier...
+
+-----------------
+Kernel: linear
+Score:  0.946843853821
+Weights:  [[ 0.09570739  0.00077753]]
+Intercept:  [-2.27934642]
+Prediction test:  0.946843853820598
+
+ml/right_turn/linear_train_0.png
+ml/right_turn/linear_train_1.png
+ml/right_turn/linear_train_2.png
+ml/right_turn/linear_train_3.png
+ml/right_turn/linear_train_4.png
+
+-----------------
+Kernel: rbf
+Score:  0.990033222591
+
+ml/right_turn/rbf_train_0.png
+ml/right_turn/rbf_train_1.png
+ml/right_turn/rbf_train_2.png
+ml/right_turn/rbf_train_3.png
+ml/right_turn/rbf_train_4.png
+
+-----------------
+Kernel: logistic
+Score:  0.943521594684
+Weights:  [[  1.65331887e-01  -1.17566104e-04]]
+Intercept:  [-3.6166842]
+Prediction test:  0.9435215946843853
+
+ml/right_turn/logistic_train_0.png
+ml/right_turn/logistic_train_1.png
+ml/right_turn/logistic_train_2.png
+ml/right_turn/logistic_train_3.png
+ml/right_turn/logistic_train_4.png
+
+Finished
+

@@ -10,9 +10,11 @@ import os
 import sys
 import re
 import json
-from sklearn import svm
+from sklearn.svm import SVC
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from scipy.signal import butter, lfilter, freqz
+from sklearn.preprocessing import MinMaxScaler
 
 
 df_columns = [
@@ -95,10 +97,9 @@ class ML:
         self.json_data = json.load(open(file))
         self.train_cols = self.json_data['train_columns']
         self.plot_cols = self.json_data['plot_columns']
-        self.svm_kernels = self.json_data['kernels']
+        self.kernels = self.json_data['kernels']
         self.ml_dir = "ml/{}/".format(self.json_data['dir'])
         self.scale_vals = self.json_data['scale_vals']
-        print(self.scale_vals)
 
         self.data_cols = df_columns
         self.lbl_cols = ['label', 'dataset']
@@ -108,7 +109,7 @@ class ML:
         print("Dir: ", self.ml_dir)
         print("Train on: ", self.train_cols)
         print("Plot with: ", self.plot_cols)
-        print("Kernels: ", self.svm_kernels)
+        print("Kernels: ", self.kernels)
 
     def get_data(self):
         combined_df = pd.DataFrame([], columns=self.use_cols)
@@ -142,18 +143,35 @@ class ML:
 
     def do_training(self, df):
         train_x = df[self.train_cols].as_matrix()
+        # train_x = self.minmax_matrix(train_x)
         train_y = df['label'].values.astype('int')
         datasets = df['dataset'].unique()
 
-        for kernel in self.svm_kernels:
+        for kernel in self.kernels:
             print("\n-----------------")
             print("Kernel: {}".format(kernel))
 
-            clf = svm.SVC(kernel=kernel)
+            if (kernel == "logistic"):
+                clf = LogisticRegression()
+            else:
+                clf = SVC(kernel=kernel)
             clf.fit(train_x, train_y)
             y_pred = clf.predict(train_x)
             
             print("Score: ", accuracy_score(train_y, y_pred))
+
+            if (kernel in ['linear', 'logistic']):
+                print("Weights: ", clf.coef_)
+                print("Intercept: ", clf.intercept_)
+                # Linear logistic prediction function
+                total, correct = len(train_x), 0
+                for i, row in enumerate(train_x):
+                    row_sum = np.sum( np.multiply(row, clf.coef_) ) + clf.intercept_[0]
+                    pred = 1 if row_sum >= 0 else 0
+                    correct += 1 if pred == train_y[i] else 0
+                print("Prediction test: ", correct / total)
+
+            print()
 
             for di in datasets:
                 plot_name = "{}{}_train_{}.png".format(self.ml_dir, kernel, di)
@@ -173,6 +191,7 @@ class ML:
     def plot_predictions(self, df, clf, plot_name):
         print(plot_name)
         x = df[self.train_cols].as_matrix()
+        # x = self.minmax_matrix(x)
         y = clf.predict(x)
 
         for col in self.plot_cols:
@@ -224,6 +243,11 @@ class ML:
         std = [ (v - m) / d for v in data ]
         return std
 
+    def minmax_matrix(self, data):
+        scaler = MinMaxScaler()
+        x_prime = scaler.fit_transform(data)
+        return x_prime
+
 if __name__ == "__main__":
     if (len(sys.argv) == 3 and sys.argv[1] == 'plot'):
         inst = DataPlot(sys.argv[2])
@@ -233,3 +257,4 @@ if __name__ == "__main__":
         inst.start()
     else:
         print("Missing required parameters")
+

@@ -1,0 +1,45 @@
+{
+	"dir" : "left_turn",
+	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Heading"],
+	"kernels" : ["linear", "rbf", "logistic"],
+	"plot_columns" : ["Gyro_x", "Heading"],
+	"scale_vals" : true,
+	"training" : [
+		{
+			"file" : "data/turning/left1_6_9_10h.csv",
+			"start" : 1500,
+			"stops" : [
+				[8500, 10500]
+			]
+		},
+		{
+			"file" : "data/turning/left2_6_9_12.csv",
+			"start" : 1500,
+			"stops" : [
+				[6500, 9000]
+			]
+		},
+		{
+			"file" : "data/turning/left3_6_9_11.csv",
+			"start" : 1500,
+			"stops" : [
+				[5500, 8500]
+			]
+		},
+		{
+			"file" : "data/turning/left4_5h_8_11.csv",
+			"start" : 1500,
+			"stops" : [
+				[6000, 8000]
+			]
+		},
+		{
+			"file" : "data/turning/left5_7_9_13.csv",
+			"start" : 1500,
+			"stops" : [
+				[7500, 10500]
+			]
+		}
+	],
+	"testing" : []
+}
