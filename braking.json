@@ -1,7 +1,12 @@
 {
+	"dir" : "braking",
+	"train_columns" : ["Accel_x", "Accel_y", "Accel_z"],
+	"kernels" : ["linear", "rbf"],
+	"plot_columns" : ["Accel_z"],
+	"scale_vals" : false,
 	"training" : [
 		{
-			"file" : "data/biking/braking3_flat_1_22.csv",
+			"file" : "data/braking/braking3_flat_1_22.csv",
 			"start" : 5000,
 			"stops" : [
 				[10000, 18000],
@@ -12,7 +17,7 @@
 			]
 		},
 		{
-			"file" : "data/biking/braking4_flat_1_14_5.csv",
+			"file" : "data/braking/braking4_flat_1_14_5.csv",
 			"start" : 5000,
 			"stops" : [
 				[9000, 15000],
@@ -23,7 +28,7 @@
 			]
 		},
 		{
-			"file" : "data/biking/braking5_flat_1_22_5.csv",
+			"file" : "data/braking/braking5_flat_1_22_5.csv",
 			"start" : 5000,
 			"stops" : [
 				[9000, 16000],
@@ -36,10 +41,10 @@
 	],
 	"testing" : [
 		{
-			"file" : "data/biking/braking1_hill.csv"
+			"file" : "data/braking/braking1_hill.csv"
 		},
 		{
-			"file" : "data/biking/braking2_hill.csv"
+			"file" : "data/braking/braking2_hill.csv"
 		}
 	]
 }

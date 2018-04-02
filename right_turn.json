@@ -1,0 +1,45 @@
+{
+	"dir" : "right_turn",
+	"train_columns" : ["Gyro_x", "Heading"],
+	"kernels" : ["linear", "rbf"],
+	"plot_columns" : ["Gyro_x", "Heading"],
+	"scale_vals" : true,
+	"training" : [
+		{
+			"file" : "data/turning/right1_25.csv",
+			"start" : 5000,
+			"stops" : [
+				[11250, 13000]
+			]
+		},
+		{
+			"file" : "data/turning/right2_7_10_25.csv",
+			"start" : 1500,
+			"stops" : [
+				[8000, 10000]
+			]
+		},
+		{
+			"file" : "data/turning/right3_7_10_25.csv",
+			"start" : 1500,
+			"stops" : [
+				[8000, 9000]
+			]
+		},
+		{
+			"file" : "data/turning/right4_7_9h_13.csv",
+			"start" : 1500,
+			"stops" : [
+				[7500, 8750]
+			]
+		},
+		{
+			"file" : "data/turning/right5_6_8h_12.csv",
+			"start" : 1000,
+			"stops" : [
+				[7000, 8500]
+			]
+		}
+	],
+	"testing" : []
+}

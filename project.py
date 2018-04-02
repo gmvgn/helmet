@@ -1,3 +1,8 @@
+# Use heading and gyro_x for turning
+# Gyro_x 0 - 40 - 0 on turn
+# Right turn: high to low heading
+# Left turn: low to high heading
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -88,11 +93,22 @@ class DataPlot:
 class ML:
     def __init__(self, file):
         self.json_data = json.load(open(file))
-        self.data_cols = ['Accel_x', 'Accel_y', 'Accel_z', 'Gyro_x', 'Gyro_y', 'Gyro_z']
-        self.other_cols = ['MS']
+        self.train_cols = self.json_data['train_columns']
+        self.plot_cols = self.json_data['plot_columns']
+        self.svm_kernels = self.json_data['kernels']
+        self.ml_dir = "ml/{}/".format(self.json_data['dir'])
+        self.scale_vals = self.json_data['scale_vals']
+        print(self.scale_vals)
+
+        self.data_cols = df_columns
         self.lbl_cols = ['label', 'dataset']
-        self.use_cols = self.data_cols + self.lbl_cols + self.other_cols
-        print(self.use_cols)
+        self.use_cols = self.data_cols + self.lbl_cols
+        print("\n----------------------------------")
+        print("ML TRAINING\n\n")
+        print("Dir: ", self.ml_dir)
+        print("Train on: ", self.train_cols)
+        print("Plot with: ", self.plot_cols)
+        print("Kernels: ", self.svm_kernels)
 
     def get_data(self):
         combined_df = pd.DataFrame([], columns=self.use_cols)
@@ -100,16 +116,16 @@ class ML:
         for file_data in self.json_data['training']:
             df = pd.read_csv(file_data['file'])
             df.columns = df_columns
-            labled_df = df[df['MS'] > file_data['start']]
-            labled_df['label'] = 0
-            labled_df['dataset'] = i
+            labled_df = df[df['MS'] > file_data['start']].copy()
+            labled_df.loc[:,'label'] = 0
+            labled_df.loc[:,'dataset'] = i
             for stop in file_data['stops']:
                 begin, end = stop
                 labled_df.loc[(labled_df['MS'] > begin) & (labled_df['MS'] < end), 'label'] = 1
 
             combined_df = pd.concat([
                 combined_df, 
-                labled_df[self.use_cols]
+                labled_df
             ])
             i += 1
         return combined_df
@@ -121,17 +137,15 @@ class ML:
 
         print("Training classifier...")
         self.do_training(combined_df)
-        print("Finished")
+        print("\nFinished\n")
 
 
     def do_training(self, df):
-        kernels = ['linear', 'rbf']
-        train_x = df[self.data_cols].as_matrix()
-        train_y = df['label'].values
-        train_y = train_y.astype('int')
+        train_x = df[self.train_cols].as_matrix()
+        train_y = df['label'].values.astype('int')
         datasets = df['dataset'].unique()
 
-        for kernel in kernels:
+        for kernel in self.svm_kernels:
             print("\n-----------------")
             print("Kernel: {}".format(kernel))
 
@@ -139,17 +153,17 @@ class ML:
             clf.fit(train_x, train_y)
             y_pred = clf.predict(train_x)
             
-            print(accuracy_score(train_y, y_pred))
+            print("Score: ", accuracy_score(train_y, y_pred))
 
             for di in datasets:
-                plot_name = "ml/{}_train_{}.png".format(kernel, di)
+                plot_name = "{}{}_train_{}.png".format(self.ml_dir, kernel, di)
                 dfi = df[df['dataset'] == di]
 
                 self.plot_predictions(dfi, clf, plot_name)
 
             test_i = 0
             for file_data in self.json_data['testing']:
-                plot_name = "ml/{}_test_{}.png".format(kernel, test_i)
+                plot_name = "{}{}_test_{}.png".format(self.ml_dir, kernel, test_i)
                 df_test = pd.read_csv(file_data['file'])
                 df_test.columns = df_columns
                 test_i += 1
@@ -158,14 +172,12 @@ class ML:
 
     def plot_predictions(self, df, clf, plot_name):
         print(plot_name)
-        x = df[self.data_cols].as_matrix()
+        x = df[self.train_cols].as_matrix()
         y = clf.predict(x)
-        z_values = df['Accel_z'].values
 
-        plt.plot(df['MS'], z_values, color='b')
-        # plt.plot(df['MS'], self.mod_avg(z_values), color='r')
-        # plt.plot(df['MS'], self.mod_lowpass(z_values, 200), color='g')
-        # plt.plot(df['MS'], self.butter_lowpass_filter(z_values, 2, 100, 5), color='c')
+        for col in self.plot_cols:
+            vals = self.scale_filter(df[col].values) if self.scale_vals else df[col].values
+            plt.plot(df['MS'], vals)
         plt.scatter(df['MS'], y, color='y')
 
         plt.gcf().set_size_inches(20, 10.5)
@@ -206,6 +218,11 @@ class ML:
         y = lfilter(b, a, data)
         return y
 
+    def scale_filter(self, data, new_min=0, new_max=1):
+        m, M = np.min(data), np.max(data)
+        d = M - m
+        std = [ (v - m) / d for v in data ]
+        return std
 
 if __name__ == "__main__":
     if (len(sys.argv) == 3 and sys.argv[1] == 'plot'):
