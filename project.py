@@ -248,13 +248,69 @@ class ML:
         x_prime = scaler.fit_transform(data)
         return x_prime
 
+
+
+class Evaluate(ML):
+    def __init__(self, file):
+        self.json_data = json.load(open(file))
+        self.clfs = self.json_data['clfs']
+        self.tests = self.json_data['tests']
+
+    def start(self):
+        for row in self.tests:
+            print("Predicting: ", row['file'])
+            df = pd.read_csv(row['file'])
+            df.columns = df_columns
+            for clf in self.clfs:
+                df.loc[:,clf['key']] = 0
+            self.do_dataset(df, row)
+            print()
+
+    def do_dataset(self, df, config):
+        def clf_predict(clf, row):
+            values = row[clf['columns']].values
+            weights = clf['weights']
+            intercept = clf['intercept']
+            row_sum = np.sum( np.multiply(values, weights) ) + intercept
+            pred = 1 if row_sum >= 0 else 0
+            return pred
+
+        for clf in self.clfs:
+            lm = lambda row: clf_predict(clf, row)
+            df.loc[:,clf['key']] = df.apply(lm, axis=1)
+            print("Classified: ", clf['key'])
+
+        self.plot_predictions(df, config)
+
+    def plot_predictions(self, df, config):
+        plot_name = config['output']
+        plot_cols = config['plot_columns']
+        scale_vals = config['scale_vals']
+        print("Plotting: ", plot_name)
+
+        for col in plot_cols:
+            vals = self.scale_filter(df[col].values) if scale_vals else df[col].values
+            plt.plot(df['MS'], vals, label="Column {}".format(col))
+        for clf in self.clfs:
+            plt.scatter(df['MS'], df[clf['key']].values, label="CLF {}".format(clf['key']))
+
+        plt.legend()
+        plt.gcf().set_size_inches(20, 10.5)
+        plt.savefig(plot_name)
+        plt.close()
+
+
 if __name__ == "__main__":
-    if (len(sys.argv) == 3 and sys.argv[1] == 'plot'):
-        inst = DataPlot(sys.argv[2])
-        inst.start()
-    elif (len(sys.argv) == 3 and sys.argv[1] == 'ml'):
-        inst = ML(sys.argv[2])
-        inst.start()
+    if (len(sys.argv) == 3):
+        if (sys.argv[1] == 'plot'):
+            inst = DataPlot(sys.argv[2])
+            inst.start()
+        elif (sys.argv[1] == 'ml'):
+            inst = ML(sys.argv[2])
+            inst.start()
+        elif (sys.argv[1] == 'evaluate'):
+            inst = Evaluate(sys.argv[2])
+            inst.start()
     else:
         print("Missing required parameters")
 

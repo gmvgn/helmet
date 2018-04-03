@@ -1,0 +1,42 @@
+{
+	"clfs" : [
+		{
+			"key": "left",
+			"columns": ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Heading"],
+			"weights": [3.11134722e-03, 1.05373018e-03, 4.53894064e-02, 1.11090656e+00, -2.80029159e+00, -5.11778842e-01, 1.28160208e-04],
+			"intercept": -0.92344789
+		},
+		{
+			"key": "right",
+			"columns": ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Heading"],
+			"weights": [5.89241459e-02, -1.02630381e-02, -4.74846114e-02, -2.32263278e-01, 2.10939820e+00, 1.93352660e-01, 4.72431770e-04],
+			"intercept": -2.28228249
+		},
+		{
+			"key": "brake",
+			"columns": ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z"],
+			"weights": [-9.71214912e-06, 5.96328865e-07, 3.35444300e-06, 4.29267741e-04, 2.44346925e-04, 8.64238431e-05],
+			"intercept": -0.99983659
+		}
+	],
+	"tests" : [
+		{
+			"file": "data/turning/lr_both1_5_11_17.csv",
+			"output": "ml/evaluate/lr1.png",
+			"plot_columns" : ["Gyro_x", "Heading"],
+			"scale_vals" : true
+		},
+		{
+			"file": "data/turning/lr_both2_6_12_18.csv",
+			"output": "ml/evaluate/lr2.png",
+			"plot_columns" : ["Gyro_x", "Heading"],
+			"scale_vals" : true
+		},
+		{
+			"file": "data/turning/lr_both3_6_11_18.csv",
+			"output": "ml/evaluate/lr3.png",
+			"plot_columns" : ["Gyro_x", "Heading"],
+			"scale_vals" : true
+		}
+	]
+}
