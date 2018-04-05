@@ -2,6 +2,7 @@
 # Gyro_x 0 - 40 - 0 on turn
 # Right turn: high to low heading
 # Left turn: low to high heading
+# For braking: find velocity in x direction or use roll?
 
 import pandas as pd
 import numpy as np
@@ -10,6 +11,7 @@ import os
 import sys
 import re
 import json
+from math import *
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
@@ -83,6 +85,13 @@ class DataPlot:
         print("\nPlotting")
         rows = len(self.df)
         x_vals = self.df['MS']
+        # Acceleration vector
+        data = []
+        g = 9.80665
+        for i, row in self.df.iterrows():
+            gb = sqrt((row['Accel_z']*g)**2 + (row['Accel_y']*g)**2 + (row['Accel_x']*g)**2)
+            data.append(gb)
+        self.df.loc[:,'Accel_Test'] = data
         for col in self.df.columns:
             plt.plot(x_vals, self.df[col])
             fig = plt.gcf()
