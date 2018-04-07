@@ -11,6 +11,7 @@ import os
 import sys
 import re
 import json
+import glob
 from math import *
 from sklearn.svm import SVC
 from sklearn.linear_model import LogisticRegression
@@ -26,9 +27,12 @@ df_columns = [
     'Mag_x', 'Mag_y', 'Mag_z', 
     'Pitch', 'Roll', 'Heading'
 ]
+df_columns_exten = df_columns + ['Accel_Norm']
 
 class DataPlot:
     def __init__(self, file):
+        print("\n----------------------------------")
+        print("Plotting: ", file)
         self.data_file = file
         self.base_name = ""
         self.ensure_csv()
@@ -77,23 +81,71 @@ class DataPlot:
     def get_main_data_frame(self):
         print("Reading dataset...")
         df = pd.read_csv(self.data_file)
-        df.columns = df_columns
+        # Add acceleration norm to CSV
+        if (len(df.columns) < len(df_columns_exten)):
+            print("Adding acceleration norm")
+            df.columns = df_columns
+            df.loc[:,'Accel_Norm'] = self.accel_norm(df)
+            df.to_csv(self.data_file, index=False)
+
+        df.columns = df_columns_exten
         print("Finished read")
         return df
+
+    def accel_norm(self, df):
+        data = []
+        g = 9.80665
+        # Average
+        l = 20 # Get these number of readings for the average
+        c = 0 # How many samples are we at now?
+        s = 0 # Sum in the average
+        a = None # The average
+        # Std dev
+        ss = 0 # Sum of squared errors
+        sc = 0 # Count of samples
+        sigma = 0 # The std dev
+        # State
+        num = 0
+        thresh = 0.6
+        num_lim = 12
+        on = False
+        for i, row in df.iterrows():
+            gb = sqrt((row['Accel_z']*g)**2 + (row['Accel_y']*g)**2 + (row['Accel_x']*g)**2)
+            if (a == None):
+                # Find average
+                c += 1
+                s += gb
+                if (c == l):
+                    a = s / c
+                t = 0
+            else:
+                # Std deviation AND distance from it
+                sc += 1
+                ss += (gb - a)**2
+                sigma = sqrt(ss / sc)
+                t = gb - a - sigma
+            data.append(t)
+
+            if (t > thresh): # Beginning brake
+                num = 0
+                on = True
+            elif (t > 0 and on and num > 0): # Give some extra wiggle room
+                num -= 1
+            else:
+                num += 1
+                if (num > num_lim): # No longer braking
+                    on = False
+            # print(row['MS'], on, num, t)
+
+        return data
 
     def start(self):
         print("\nPlotting")
         rows = len(self.df)
         x_vals = self.df['MS']
-        # Acceleration vector
-        data = []
-        g = 9.80665
-        for i, row in self.df.iterrows():
-            gb = sqrt((row['Accel_z']*g)**2 + (row['Accel_y']*g)**2 + (row['Accel_x']*g)**2)
-            data.append(gb)
-        self.df.loc[:,'Accel_Test'] = data
         for col in self.df.columns:
             plt.plot(x_vals, self.df[col])
+            plt.xticks(np.arange(min(x_vals), max(x_vals) + 1, 2500), rotation=45)
             fig = plt.gcf()
             fig.set_size_inches(20, 10.5)
             plt.savefig("{}/{}.png".format(self.plot_dir, col))
@@ -110,7 +162,7 @@ class ML:
         self.ml_dir = "ml/{}/".format(self.json_data['dir'])
         self.scale_vals = self.json_data['scale_vals']
 
-        self.data_cols = df_columns
+        self.data_cols = df_columns_exten
         self.lbl_cols = ['label', 'dataset']
         self.use_cols = self.data_cols + self.lbl_cols
         print("\n----------------------------------")
@@ -125,7 +177,7 @@ class ML:
         i = 0
         for file_data in self.json_data['training']:
             df = pd.read_csv(file_data['file'])
-            df.columns = df_columns
+            df.columns = df_columns_exten
             labled_df = df[df['MS'] > file_data['start']].copy()
             labled_df.loc[:,'label'] = 0
             labled_df.loc[:,'dataset'] = i
@@ -192,7 +244,7 @@ class ML:
             for file_data in self.json_data['testing']:
                 plot_name = "{}{}_test_{}.png".format(self.ml_dir, kernel, test_i)
                 df_test = pd.read_csv(file_data['file'])
-                df_test.columns = df_columns
+                df_test.columns = df_columns_exten
                 test_i += 1
 
                 self.plot_predictions(df_test, clf, plot_name)
@@ -269,7 +321,7 @@ class Evaluate(ML):
         for row in self.tests:
             print("Predicting: ", row['file'])
             df = pd.read_csv(row['file'])
-            df.columns = df_columns
+            df.columns = df_columns_exten
             for clf in self.clfs:
                 df.loc[:,clf['key']] = 0
             self.do_dataset(df, row)
@@ -310,13 +362,15 @@ class Evaluate(ML):
 
 
 if __name__ == "__main__":
-    if (len(sys.argv) == 3):
+    if (len(sys.argv) >= 3):
         if (sys.argv[1] == 'plot'):
-            inst = DataPlot(sys.argv[2])
-            inst.start()
+            for file in sys.argv[2:]:
+                inst = DataPlot(file)
+                inst.start()
         elif (sys.argv[1] == 'ml'):
-            inst = ML(sys.argv[2])
-            inst.start()
+            for file in sys.argv[2:]:
+                inst = ML(file)
+                inst.start()
         elif (sys.argv[1] == 'evaluate'):
             inst = Evaluate(sys.argv[2])
             inst.start()

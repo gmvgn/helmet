@@ -61,9 +61,19 @@ int right_i = {};
 float right_weights = {};
 float right_intercept = 0;
 
-int brake_i = {};
-float brake_weights = {};
-float brake_intercept = 0;
+float g = 9.80665;
+
+// Braking (more complicated)
+int brake_avg_lim = 20;
+int brake_avg_cnt = 0;
+float brake_avg_sum = 0;
+float brake_avg = -100;
+float brake_stddev_ss = 0;
+int brake_stddev_sc = 0;
+float brake_stddev = 0;
+int brake_num = 0;
+float brake_thresh = 0.6;
+int brake_lim = 12;
 
 void setup() 
 {  
@@ -127,17 +137,85 @@ void loop()
 
     left_signal = lin_decision(data, &left_weights, &left_i, left_intercept, 7);
     right_signal = lin_decision(data, &right_weights, &right_i, right_intercept, 7);
-    brake_signal = lin_decision(data, &brake_weights, &brake_i, brake_intercept, 7);
+    brake_check(data[9]);
     
     lastPrint = millis(); // Update lastPrint time
   }
 
-  // TODO: Handle NeoPixels
-  uint32_t c = strip.Color(255, 0, 0);
-  for (uint16_t i = 0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, c);
+  set_lights();
+}
+
+void set_lights()
+{
+  // Handle signals on NeoPixel
+  uint32_t red = strip.Color(255, 0, 0);
+  uint32_t yellow = strip.Color(255, 255, 0);
+  uint32_t off = strip.Color(0, 0, 0);
+  // Decide which lights to turn on
+  uint16_t lights = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  if (right_signal) {
+    // Right half
+    lights[0] = lights[1] = lights[2] = lights[3] = lights[4] = lights[5] = 2;
   }
+  if (left_signal) {
+    // Left half
+    lights[6] = lights[7] = lights[8] = lights[9] = lights[10] = lights[11] = 2;
+  }
+  if (brake_signal) {
+    if (left_signal || right_signal) {
+      // Top half
+      lights[0] = lights[1] = lights[2] = lights[9] = lights[10] = lights[11] = 1;
+    } else {
+      // All red
+      for (uint16_t i = 0; i < strip.numPixels(); i++) {
+        lights[i] = 1;
+      }
+    }
+  }
+  // Set colors
+  uint8_t wait = 100;
+  for (uint16_t i = 0; i < strip.numPixels(); i++) {
+    if (lights[i] == 0) {
+      strip.setPixelColor(i, off);
+    } else if (lights[i] == 1) {
+      strip.setPixelColor(i, red);
+    } else {
+      strip.setPixelColor(i, yellow);      
+    }
+  }
+  // 1/4 brightness
+  strip.setBrightness(64);
   strip.show();
+  delay(wait);  
+}
+
+void brake_check(float accel_norm)
+{
+  float t = 0;
+  if (brake_avg == -100) {
+    brake_avg_cnt++;
+    brake_avg_sum += accel_norm;
+    if (brake_avg_cnt == brake_avg_lim) {
+      brake_avg = brake_avg_sum / brake_avg_cnt;
+    }
+  } else {
+    brake_stddev_sc++;
+    brake_stddev_ss += pow(accel_norm - brake_avg, 2);
+    brake_stddev = sqrt(brake_stddev_ss / brake_stddev_sc);
+    t = accel_norm - brake_avg - brake_stddev;
+  }
+
+  if (t > brake_thresh) {
+    brake_num = 0;
+    brake_signal = true;
+  } else if (brake_signal && t > 0 && brake_num > 0) {
+    brake_num--;
+  } else {
+    brake_num++;
+    if (brake_num > brake_lim) {
+      brake_signal = false;
+    }
+  }
 }
 
 bool lin_decision(float readings[], float weights[], int indexes[], float intercept, int len)
@@ -147,11 +225,7 @@ bool lin_decision(float readings[], float weights[], int indexes[], float interc
     // Sensor value * weight
     s += readings[indexes[i]] * weights[i];
   }
-  bool b = false;
-  if (s >= 0) {
-    b = true;
-  }
-  return b;
+  return (s >= 0);
 }
 
 void getSensorReadings(float data[])
@@ -171,7 +245,7 @@ void getSensorReadings(float data[])
     -imu.my, -imu.mx, imu.mz
   );
   // Additional acceleration value
-  data[9] = sqrt(data[0] * data[0] + data[1] * data[1] + data[2] * data[2]);
+  data[9] = sqrt( pow(data[0] * g, 2) + pow(data[1] * g, 2) + pow(data[2] * g, 2) );
 }
 
 // Calculate pitch, roll, and heading.

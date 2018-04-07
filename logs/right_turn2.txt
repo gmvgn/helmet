@@ -4,7 +4,7 @@ ML TRAINING
 
 
 Dir:  ml/right_turn2/
-Train on:  ['Gyro_x', 'Gyro_y', 'Gyro_z', 'Accel_x', 'Accel_y', 'Accel_z', 'Heading']
+Train on:  ['Gyro_x', 'Gyro_y', 'Gyro_z', 'Accel_x', 'Accel_y', 'Accel_z', 'Heading', 'Accel_Norm']
 Plot with:  ['Gyro_x', 'Heading']
 Kernels:  ['linear', 'rbf', 'logistic']
 Selecting data...
@@ -13,11 +13,11 @@ Training classifier...
 
 -----------------
 Kernel: linear
-Score:  0.962745098039
-Weights:  [[  5.70104159e-02  -1.14660992e-02  -4.74834710e-02  -2.24679505e-01
-    1.84878146e+00  -9.74083238e-02  -2.78296057e-04]]
-Intercept:  [-1.71991655]
-Prediction test:  0.9627450980392157
+Score:  0.964705882353
+Weights:  [[  5.76694579e-02  -9.82152512e-03  -4.75568954e-02  -3.71925096e-01
+    1.88480704e+00   2.76377298e-01  -6.64008750e-04  -5.48964173e-02]]
+Intercept:  [-2.06979865]
+Prediction test:  0.9647058823529412
 
 ml/right_turn2/linear_train_0.png
 ml/right_turn2/linear_train_1.png
@@ -37,11 +37,11 @@ ml/right_turn2/rbf_test_0.png
 
 -----------------
 Kernel: logistic
-Score:  0.962745098039
-Weights:  [[ 0.10395021 -0.0112411  -0.1006503   0.09203578  1.54816298 -1.23675661
-  -0.00240833]]
-Intercept:  [-2.07740252]
-Prediction test:  0.9627450980392157
+Score:  0.958823529412
+Weights:  [[ 0.10226304 -0.01490276 -0.09367304 -0.03627982  1.55352295 -1.60278446
+  -0.00161489  0.32795033]]
+Intercept:  [-1.67063952]
+Prediction test:  0.9588235294117647
 
 ml/right_turn2/logistic_train_0.png
 ml/right_turn2/logistic_train_1.png

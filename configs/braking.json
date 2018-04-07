@@ -1,7 +1,7 @@
 {
 	"dir" : "braking",
-	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z"],
-	"kernels" : ["linear", "rbf", "logistic"],
+	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Accel_Norm"],
+	"kernels" : ["rbf", "logistic"],
 	"plot_columns" : ["Accel_z"],
 	"scale_vals" : false,
 	"training" : [

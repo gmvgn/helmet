@@ -1,6 +1,6 @@
 {
 	"dir" : "left_turn",
-	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Heading"],
+	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Heading", "Accel_Norm"],
 	"kernels" : ["linear", "rbf", "logistic"],
 	"plot_columns" : ["Gyro_x", "Heading"],
 	"scale_vals" : true,

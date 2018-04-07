@@ -1,0 +1,90 @@
+{
+	"dir" : "braking_narrow",
+	"train_columns" : ["Gyro_x", "Gyro_y", "Gyro_z", "Accel_x", "Accel_y", "Accel_z", "Accel_Norm"],
+	"kernels" : ["rbf", "logistic"],
+	"plot_columns" : ["Accel_Norm"],
+	"scale_vals" : true,
+	"training" : [
+		{
+			"file" : "data/braking/braking3_flat_1_22.csv",
+			"start" : 5500,
+			"stops" : [
+				[8500, 11500],
+				[23500, 28500],
+				[37000, 40000],
+				[50600, 54000],
+				[62500, 70700]
+			]
+		},
+		{
+			"file" : "data/braking/braking4_flat_1_14_5.csv",
+			"start" : 5000,
+			"stops" : [
+				[13189, 18000],
+				[25700, 30700],
+				[45600, 50700],
+				[61500, 65800]
+			]
+		},
+		{
+			"file" : "data/braking/braking5_flat_1_22_5.csv",
+			"start" : 5000,
+			"stops" : [
+				[5600, 8500],
+				[25700, 29000],
+				[38900, 43200],
+				[51000, 58000],
+				[68000, 72500]
+			]
+		},
+		{
+			"file" : "data/braking/braking6_flat_0_27_2.csv",
+			"start" : 5250,
+			"stops" : [
+				[9500, 12000],
+				[19500, 21500]
+			]
+		},
+		{
+			"file" : "data/braking/braking7_flat_0_23_2.csv",
+			"start" : 4000,
+			"stops" : [
+				[9000, 11500],
+				[17500, 20000]
+			]
+		},
+		{
+			"file" : "data/braking/braking8_flat_0_21_2.csv",
+			"start" : 5000,
+			"stops" : [
+				[5800, 7500],
+				[11500, 13200]
+			]
+		},
+		{
+			"file" : "data/braking/braking9_one_6_9.csv",
+			"start" : 1000,
+			"stops" : [
+				[14000, 15650]
+			]
+		},
+		{
+			"file" : "data/braking/braking10_one_7_9h.csv",
+			"start" : 1000,
+			"stops" : [
+				[7500, 8750]
+			]
+		}
+	],
+	"testing" : [
+		{
+			"file" : "data/braking/braking11_one_8_10.csv"
+		},
+		{
+			"file" : "data/braking/braking1_hill.csv"
+		},
+		{
+			"file" : "data/braking/braking2_hill.csv"
+		}
+	]
+}

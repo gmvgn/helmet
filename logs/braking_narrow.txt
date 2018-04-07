@@ -1,0 +1,51 @@
+
+----------------------------------
+ML TRAINING
+
+
+Dir:  ml/braking_narrow/
+Train on:  ['Gyro_x', 'Gyro_y', 'Gyro_z', 'Accel_x', 'Accel_y', 'Accel_z', 'Accel_Norm']
+Plot with:  ['Accel_Norm']
+Kernels:  ['rbf', 'logistic']
+Selecting data...
+Finished
+Training classifier...
+
+-----------------
+Kernel: rbf
+Score:  0.88164603059
+
+ml/braking_narrow/rbf_train_0.png
+ml/braking_narrow/rbf_train_1.png
+ml/braking_narrow/rbf_train_2.png
+ml/braking_narrow/rbf_train_3.png
+ml/braking_narrow/rbf_train_4.png
+ml/braking_narrow/rbf_train_5.png
+ml/braking_narrow/rbf_train_6.png
+ml/braking_narrow/rbf_train_7.png
+ml/braking_narrow/rbf_test_0.png
+ml/braking_narrow/rbf_test_1.png
+ml/braking_narrow/rbf_test_2.png
+
+-----------------
+Kernel: logistic
+Score:  0.759286234523
+Weights:  [[  7.37661045e-03   2.79405695e-03  -2.52797102e-04   1.49534487e+00
+   -5.58245949e-02  -2.42550088e-01   3.44840051e-03]]
+Intercept:  [-0.62091521]
+Prediction test:  0.7592862345229424
+
+ml/braking_narrow/logistic_train_0.png
+ml/braking_narrow/logistic_train_1.png
+ml/braking_narrow/logistic_train_2.png
+ml/braking_narrow/logistic_train_3.png
+ml/braking_narrow/logistic_train_4.png
+ml/braking_narrow/logistic_train_5.png
+ml/braking_narrow/logistic_train_6.png
+ml/braking_narrow/logistic_train_7.png
+ml/braking_narrow/logistic_test_0.png
+ml/braking_narrow/logistic_test_1.png
+ml/braking_narrow/logistic_test_2.png
+
+Finished
+
