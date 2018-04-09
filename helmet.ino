@@ -53,13 +53,13 @@ bool right_signal = false;
 bool brake_signal = false;
 
 // TODO: fill in
-int left_i = {};
-float left_weights = {};
-float left_intercept = 0;
+int left_i[8] = {3, 4, 5, 0, 1, 2, 6, 9};
+float left_weights[8] = {1.55607334e-02, -3.25964208e-03, 7.00177749e-02, 1.89226649e+00, -2.57515182e+00, -8.57912903e-01, 1.20130179e-03, -1.88706245e-01};
+float left_intercept = -1.51385038;
 
-int right_i = {};
-float right_weights = {};
-float right_intercept = 0;
+int right_i[8] = {3, 4, 5, 0, 1, 2, 6, 9};
+float right_weights[8] = {0.10226304, -0.01490276, -0.09367304, -0.03627982, 1.55352295, -1.60278446, -0.00161489, 0.32795033};
+float right_intercept = -1.67063952;
 
 float g = 9.80665;
 
@@ -101,7 +101,9 @@ void setup()
   }
   // Start NeoPixel strip
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off'  
+  strip.show(); // Initialize all pixels to 'off'
+
+  // Serial.println("HERE");
 }
 
 void loop()
@@ -135,8 +137,8 @@ void loop()
     float data[10];
     getSensorReadings(data);
 
-    left_signal = lin_decision(data, &left_weights, &left_i, left_intercept, 7);
-    right_signal = lin_decision(data, &right_weights, &right_i, right_intercept, 7);
+    left_signal = lin_decision(data, left_weights, left_i, left_intercept, 7);
+    right_signal = lin_decision(data, right_weights, right_i, right_intercept, 7);
     brake_check(data[9]);
     
     lastPrint = millis(); // Update lastPrint time
@@ -152,7 +154,7 @@ void set_lights()
   uint32_t yellow = strip.Color(255, 255, 0);
   uint32_t off = strip.Color(0, 0, 0);
   // Decide which lights to turn on
-  uint16_t lights = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+  uint16_t lights[12] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
   if (right_signal) {
     // Right half
     lights[0] = lights[1] = lights[2] = lights[3] = lights[4] = lights[5] = 2;
@@ -186,7 +188,7 @@ void set_lights()
   // 1/4 brightness
   strip.setBrightness(64);
   strip.show();
-  delay(wait);  
+  delay(wait);
 }
 
 void brake_check(float accel_norm)
@@ -204,6 +206,11 @@ void brake_check(float accel_norm)
     brake_stddev = sqrt(brake_stddev_ss / brake_stddev_sc);
     t = accel_norm - brake_avg - brake_stddev;
   }
+
+//  Serial.println("Brake Check:");
+//  Serial.println(brake_avg);
+//  Serial.println(brake_stddev);
+//  Serial.println(t);
 
   if (t > brake_thresh) {
     brake_num = 0;

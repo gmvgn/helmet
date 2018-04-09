@@ -88,6 +88,8 @@ class DataPlot:
             df.loc[:,'Accel_Norm'] = self.accel_norm(df)
             df.to_csv(self.data_file, index=False)
 
+        # df.loc[:,'Accel_Norm'] = self.accel_norm(df)
+
         df.columns = df_columns_exten
         print("Finished read")
         return df
@@ -109,8 +111,16 @@ class DataPlot:
         thresh = 0.6
         num_lim = 12
         on = False
+        # Test
+        # move_min = 0
+        # move_max = 0
         for i, row in df.iterrows():
             gb = sqrt((row['Accel_z']*g)**2 + (row['Accel_y']*g)**2 + (row['Accel_x']*g)**2)
+            # gb = pow(row['Accel_x'] * g, 2)
+            # if (gb < move_min):
+            #     move_min = gb
+            # if (gb > move_max):
+            #     move_max = gb
             if (a == None):
                 # Find average
                 c += 1
@@ -124,6 +134,9 @@ class DataPlot:
                 ss += (gb - a)**2
                 sigma = sqrt(ss / sc)
                 t = gb - a - sigma
+
+            # std = (gb - move_min) / (move_max - move_min)
+            # print(row['MS'], t, [move_min, move_max], std)
             data.append(t)
 
             if (t > thresh): # Beginning brake
@@ -144,11 +157,13 @@ class DataPlot:
         rows = len(self.df)
         x_vals = self.df['MS']
         for col in self.df.columns:
+            file = "{}/{}.png".format(self.plot_dir, col)
+            print(file)
             plt.plot(x_vals, self.df[col])
             plt.xticks(np.arange(min(x_vals), max(x_vals) + 1, 2500), rotation=45)
             fig = plt.gcf()
             fig.set_size_inches(20, 10.5)
-            plt.savefig("{}/{}.png".format(self.plot_dir, col))
+            plt.savefig(file)
             plt.close()
         print("Done\n")
 
